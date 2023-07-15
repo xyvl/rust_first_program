@@ -1,56 +1,67 @@
 use std::io;
 
+struct User {
+    name: String,
+    surname: String,
+    age: usize,
+}
 fn main() {
-    loop {
-        let mut cat1_input = String::new();
-        let mut cat2_input = String::new();
-    
-        let mut cat1= 0.0;
-        let mut cat2= 0.0;
-    
-        println!("Введите первый катет");
-    
-        match io::stdin().read_line(&mut cat1_input) {
-            Ok(_) => {}
-            Err(e) => {
-                println!("ОШИБКА ВВОДА: {}", e)
-            }
+    let mut user = User {
+        name: String::new(),
+        surname: String::new(),
+        age: 0,
+    };
+    let mut check_ok: usize = 0;
+    let mut debug = String::new();
+
+    println!("Введите своё имя");
+    match io::stdin().read_line(&mut user.name) {
+        Ok(_) => {
+            check_ok += 1;
         }
-    
-        match cat1_input.trim().parse::<f64>() {
-            Ok(_) => {
-                cat1 = cat1_input.trim().parse::<f64>().unwrap()
-            }
-            Err(_) => {
-                println!("Вы ввели не число в первом катете.");
-                continue;
-            },
+        Err(e) => {
+            println!("Вы ввели неправильно своё имя - {}", e)
         }
-    
-        println!("Введите второй катет");
-    
-        match io::stdin().read_line(&mut cat2_input) {
-            Ok(_) => {}
-            Err(e) => {
-                println!("ОШИБКА ВВОДА: {}", e)
-            }
-        }
-    
-        match cat2_input.trim().parse::<f64>() {
-            Ok(_) => {
-                cat2 = cat2_input.trim().parse::<f64>().unwrap()
-            }
-            Err(_) => {
-                println!("Вы ввели не число во втором катете.");
-                continue;
-            },
-        }
-    
-        println!("Гипотенуза равна: {}", pythagorean_theorem(cat1, cat2))
     }
 
+    println!("Введите свою фамилию");
+    match io::stdin().read_line(&mut user.surname) {
+        Ok(_) => {
+            check_ok += 1;
+        }
+        Err(e) => {
+            println!("Вы ввели неправильно свою фамилию - {}", e)
+        }
+    }
+
+    println!("Введите свой возраст");
+    match io::stdin().read_line(&mut debug) {
+        Ok(_) => {
+            (user.age, check_ok) = parse_string_in_usize(debug, check_ok);
+        }
+        Err(e) => {
+            println!("Вы ввели неправильно свой возраст - {}", e)
+        }
+    }
+
+    if check_ok == 3{
+        println!(
+            "Ваше имя - {}, ваша фамилия - {}, а возраст - {}",
+            user.name.trim(),
+            user.surname.trim(),
+            user.age
+        )
+    }
 }
 
-fn pythagorean_theorem(c1: f64, c2: f64) -> f64 {
-    (c1 * c1 + c2 * c2).sqrt()
+fn parse_string_in_usize(el: String, check: usize) -> (usize, usize) {
+    match el.trim().parse::<usize>() {
+        Ok(_) => {
+            return (el.trim().parse::<usize>().unwrap(), check + 1);
+        }
+        Err(e) => {
+            println!("Вы ввели неправильно свой возраст - {}", e);
+            return (0, check);
+        }
+    }
 }
