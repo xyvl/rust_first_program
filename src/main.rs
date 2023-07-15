@@ -1,54 +1,45 @@
 use std::io;
 
 fn main() {
+    let mut cat1 = 0.0;
+    let mut cat2 = 0.0;
+
     loop {
-        let mut cat1_input = String::new();
-        let mut cat2_input = String::new();
-    
-        let mut cat1= 0.0;
-        let mut cat2= 0.0;
-    
-        println!("Введите первый катет");
-    
-        match io::stdin().read_line(&mut cat1_input) {
-            Ok(_) => {}
-            Err(e) => {
-                println!("ОШИБКА ВВОДА: {}", e)
-            }
+        cat1 = input_number("Введите первый катет".to_string());
+        if cat1 != 0.0 {
+            break;
         }
-    
-        match cat1_input.trim().parse::<f64>() {
-            Ok(_) => {
-                cat1 = cat1_input.trim().parse::<f64>().unwrap()
-            }
-            Err(_) => {
-                println!("Вы ввели не число в первом катете.");
-                continue;
-            },
+    }
+    loop {
+        cat2 = input_number("Введите второй катет".to_string());
+        if cat2 != 0.0 {
+            break;
         }
-    
-        println!("Введите второй катет");
-    
-        match io::stdin().read_line(&mut cat2_input) {
-            Ok(_) => {}
-            Err(e) => {
-                println!("ОШИБКА ВВОДА: {}", e)
-            }
-        }
-    
-        match cat2_input.trim().parse::<f64>() {
-            Ok(_) => {
-                cat2 = cat2_input.trim().parse::<f64>().unwrap()
-            }
-            Err(_) => {
-                println!("Вы ввели не число во втором катете.");
-                continue;
-            },
-        }
-    
-        println!("Гипотенуза равна: {}", pythagorean_theorem(cat1, cat2))
     }
 
+    println!("Гипотенуза равна: {}", pythagorean_theorem(cat1, cat2));
+}
+
+fn input_number(message: String) -> f64 {
+    println!("{}", message);
+
+    let mut text: String = String::new();
+    match io::stdin().read_line(&mut text) {
+        Ok(_) => {}
+        Err(e) => {
+            println!("ОШИБКА ВВОДА: {}", e)
+        }
+    }
+
+    match text.trim().parse::<f64>() {
+        Ok(_) => {
+            return text.trim().parse::<f64>().unwrap();
+        }
+        Err(_) => {
+            println!("Вы ввели не число в первом катете.");
+            return 0.0;
+        }
+    }
 }
 
 fn pythagorean_theorem(c1: f64, c2: f64) -> f64 {
