@@ -11,57 +11,81 @@ fn main() {
         surname: String::new(),
         age: 0,
     };
-    let mut check_ok: usize = 0;
-    let mut debug = String::new();
 
     println!("Введите своё имя");
-    match io::stdin().read_line(&mut user.name) {
-        Ok(_) => {
-            check_ok += 1;
-        }
-        Err(e) => {
-            println!("Вы ввели неправильно своё имя - {}", e)
+    loop {
+        user.name = input_only_string_message(&"имя".to_string());
+        if user.name != "0" {
+            break;
         }
     }
 
     println!("Введите свою фамилию");
-    match io::stdin().read_line(&mut user.surname) {
-        Ok(_) => {
-            check_ok += 1;
-        }
-        Err(e) => {
-            println!("Вы ввели неправильно свою фамилию - {}", e)
+    loop {
+        user.surname = input_only_string_message(&"фамилия".to_string());
+        if user.surname != "0" {
+            break;
         }
     }
 
     println!("Введите свой возраст");
-    match io::stdin().read_line(&mut debug) {
-        Ok(_) => {
-            (user.age, check_ok) = parse_string_in_usize(debug, check_ok);
-        }
-        Err(e) => {
-            println!("Вы ввели неправильно свой возраст - {}", e)
+    loop {
+        user.age = parse_string_in_usize();
+        if user.age != 404 {
+            break;
         }
     }
 
-    if check_ok == 3{
-        println!(
-            "Ваше имя - {}, ваша фамилия - {}, а возраст - {}",
-            user.name.trim(),
-            user.surname.trim(),
-            user.age
-        )
+    println!(
+        "Ваше имя - {}, ваша фамилия - {}, а возраст - {}",
+        user.name.trim(),
+        user.surname.trim(),
+        user.age
+    )
+}
+
+fn input_only_string_message(t: &String) -> String {
+    let text = input_text();
+    let mut check = false;
+
+    for ch in text.chars() {
+        match ch.to_string().trim().parse::<usize>() {
+            Ok(_) => {
+                println!("Вы допустили ошибку при вводе, а именно ввели не допустимые символу, попробуйте снова");
+                println!("Введите своё {}", &t);
+                check = true;
+            }
+            Err(_) => {}
+        }
+    }
+    if check {
+        return "0".to_string();
+    } else {
+        return text;
     }
 }
 
-fn parse_string_in_usize(el: String, check: usize) -> (usize, usize) {
-    match el.trim().parse::<usize>() {
+fn parse_string_in_usize() -> usize {
+    let text = input_text();
+
+    match text.trim().parse::<usize>() {
         Ok(_) => {
-            return (el.trim().parse::<usize>().unwrap(), check + 1);
+            return text.trim().parse::<usize>().unwrap();
         }
-        Err(e) => {
-            println!("Вы ввели неправильно свой возраст - {}", e);
-            return (0, check);
+        Err(_) => {
+            println!("Вы ввели свой возраст неправильно");
+            return 404;
         }
     }
+}
+
+fn input_text() -> String {
+    let mut text = String::new();
+    match io::stdin().read_line(&mut text) {
+        Ok(_) => {}
+        Err(_) => {
+            println!("Произошла ошибка при вводе -");
+        }
+    }
+    return text;
 }
