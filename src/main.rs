@@ -1,7 +1,6 @@
 use std::io;
 
 fn main() {
-    println!("cefe");
     let mut cat1 = 0.0;
     let mut cat2 = 0.0;
 
